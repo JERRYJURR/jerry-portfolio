@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Hanken_Grotesk, IBM_Plex_Mono } from "next/font/google";
+import { Navbar } from "@/components/navbar";
+import siteConfig from "../../site.config.json";
 import "./globals.css";
 
 const hankenGrotesk = Hanken_Grotesk({
@@ -32,6 +34,10 @@ export default function RootLayout({
       className={`${hankenGrotesk.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <Navbar
+          bookingUrl={siteConfig.bookingUrl}
+          resumeUrl={siteConfig.resumeUrl}
+        />
         {children}
       </body>
     </html>

@@ -42,17 +42,18 @@ export function HeroActions({ email, bookingUrl }: HeroActionsProps) {
         rel="noopener noreferrer"
         className="
           group relative overflow-hidden
-          inline-flex h-10 items-center gap-2 rounded-full px-4
-          bg-gradient-to-b from-white to-white/80
+          inline-flex h-10 items-center gap-1 rounded-[12px] px-[14px]
+          border border-white
+          bg-gradient-to-b from-[oklab(94%_0_0)] to-[oklab(78%_0_0)]
           text-sm font-medium text-zinc-950
-          shadow-[0_0_0_0_rgba(255,255,255,0)]
-          transition-[transform,box-shadow,background-color]
-          duration-[220ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]
+          transition-[transform,box-shadow,background-image]
+          duration-[420ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]
           will-change-transform
           hover:-translate-y-px
-          hover:shadow-[0_8px_24px_-12px_rgba(255,255,255,0.45)]
+          hover:from-[oklab(98%_0_0)] hover:to-[oklab(82%_0_0)]
+          hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_24px_rgba(255,255,255,0.1),0_2px_6px_rgba(0,0,0,0.25)]
           active:scale-[0.97] active:duration-[80ms] active:ease-out
-          active:from-zinc-200 active:to-zinc-300
+          active:from-[oklab(85%_0_0)] active:to-[oklab(70%_0_0)]
           focus-visible:outline-none focus-visible:ring-2
           focus-visible:ring-white focus-visible:ring-offset-2
           focus-visible:ring-offset-background
@@ -63,7 +64,7 @@ export function HeroActions({ email, bookingUrl }: HeroActionsProps) {
           aria-hidden
           className="
             pointer-events-none absolute inset-0 -translate-x-full
-            bg-[linear-gradient(120deg,transparent_30%,rgba(255,255,255,0.55)_50%,transparent_70%)]
+            bg-[linear-gradient(120deg,transparent_30%,rgba(255,255,255,0.85)_50%,transparent_70%)]
             transition-transform duration-0
             group-hover:translate-x-full
             group-hover:duration-[600ms] group-hover:ease-out
@@ -86,15 +87,19 @@ export function HeroActions({ email, bookingUrl }: HeroActionsProps) {
         onClick={handleCopy}
         className={`
           group relative
-          inline-flex h-10 items-center gap-2 rounded-full px-4
-          border bg-transparent
+          inline-flex h-10 items-center gap-2 rounded-[12px] px-[14px]
+          border
+          bg-gradient-to-b from-white/[0.05] to-white/[0.025]
           text-sm font-medium
-          transition-[transform,border-color,color,background-color]
+          shadow-[0_0_0_0_rgba(0,0,0,0)]
+          transition-[transform,border-color,color,background-image,box-shadow]
           duration-[160ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]
           will-change-transform
           hover:-translate-y-px
+          hover:from-white/[0.10] hover:to-white/[0.06]
+          hover:shadow-[0_4px_12px_rgba(0,0,0,0.2)]
           active:scale-[0.97] active:duration-[80ms] active:ease-out
-          active:bg-white/[0.04]
+          active:from-white/[0.14] active:to-white/[0.10]
           focus-visible:outline-none focus-visible:ring-2
           focus-visible:ring-white focus-visible:ring-offset-2
           focus-visible:ring-offset-background

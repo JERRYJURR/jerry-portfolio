@@ -1,8 +1,7 @@
 import Image from "next/image";
+import { Avatar } from "@/components/avatar";
 import { HeroActions } from "@/components/hero-actions";
 import siteConfig from "../../site.config.json";
-
-const BOOKING_URL = "https://calendar.app.google/X57gyeciuexR1UR28";
 
 export default function Home() {
   return (
@@ -10,20 +9,16 @@ export default function Home() {
       <section className="mx-auto w-full max-w-[1024px] px-6 pt-32 pb-24">
         <div className="flex max-w-[512px] flex-col gap-10">
           {/* Avatar */}
-          <div className="h-24 w-24 overflow-hidden rounded-full">
-            <Image
-              src="/retouched.webp"
-              alt="Jerry Kou"
-              width={192}
-              height={192}
-              className="h-full w-full object-cover"
-              priority
-            />
-          </div>
+          <Avatar
+            className="size-24"
+            sizes="96px"
+            priority
+            alt="Jerry Kou"
+          />
 
           {/* Heading + body */}
           <div className="flex flex-col gap-4">
-            <h1 className="text-3xl font-medium leading-[1.15] tracking-tight md:text-[2.25rem]">
+            <h1 className="text-[2rem] font-medium leading-[1.15] tracking-tight">
               AI-native product designer. I design, code, and ship scalable
               products.
             </h1>
@@ -34,7 +29,10 @@ export default function Home() {
           </div>
 
           {/* CTAs */}
-          <HeroActions email={siteConfig.email} bookingUrl={BOOKING_URL} />
+          <HeroActions
+            email={siteConfig.email}
+            bookingUrl={siteConfig.bookingUrl}
+          />
 
           {/* Achievements */}
           <div className="flex flex-row items-start gap-10 pt-2">
@@ -50,12 +48,12 @@ export default function Home() {
 function Badge({ title, caption }: { title: string; caption: string }) {
   return (
     <div className="flex flex-col items-center gap-1.5">
-      <div className="flex flex-row items-center gap-2">
+      <div className="flex flex-row items-center gap-3">
         <Wreath />
         <span className="text-xl font-medium tracking-tight">{title}</span>
         <Wreath flipped />
       </div>
-      <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+      <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
         {caption}
       </span>
     </div>
