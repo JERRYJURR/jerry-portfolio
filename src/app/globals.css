@@ -111,3 +111,21 @@
     @apply font-sans;
   }
 }
+
+/* Case study card · idle drift
+ * Each gradient blob orbits ±3% of its base position on a 20s loop.
+ * Two blobs phase-offset 180° (via -10s animation-delay) so they never sync. */
+@keyframes drift-a {
+  0%   { transform: translate(3%, 0%); }
+  25%  { transform: translate(0%, 3%); }
+  50%  { transform: translate(-3%, 0%); }
+  75%  { transform: translate(0%, -3%); }
+  100% { transform: translate(3%, 0%); }
+}
+
+.drift-a { animation: drift-a 20s linear infinite; }
+.drift-b { animation: drift-a 20s linear -10s infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .drift-a, .drift-b { animation: none; }
+}

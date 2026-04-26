@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Hanken_Grotesk, IBM_Plex_Mono } from "next/font/google";
+import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import siteConfig from "../../site.config.json";
 import "./globals.css";
@@ -39,6 +40,13 @@ export default function RootLayout({
           resumeUrl={siteConfig.resumeUrl}
         />
         {children}
+        <Footer
+          email={siteConfig.email}
+          bookingUrl={siteConfig.bookingUrl}
+          resumeUrl={siteConfig.resumeUrl}
+          linkedinUrl={siteConfig.linkedinUrl}
+          location={siteConfig.location}
+        />
       </body>
     </html>
   );

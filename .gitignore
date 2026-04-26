@@ -42,3 +42,7 @@ yarn-error.log*
 
 # claude code metadata (project-local; not for the public repo)
 .claude/
+
+# local debug screenshots / scratch
+*-shot.png
+.stash/

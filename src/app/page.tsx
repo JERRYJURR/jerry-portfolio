@@ -1,13 +1,17 @@
 import Image from "next/image";
 import { Avatar } from "@/components/avatar";
+import { CaseStudies } from "@/components/case-studies";
+import { Experience } from "@/components/experience";
 import { HeroActions } from "@/components/hero-actions";
+import { Skills } from "@/components/skills";
+import { Tools } from "@/components/tools";
 import siteConfig from "../../site.config.json";
 
 export default function Home() {
   return (
     <main className="flex flex-1 flex-col">
-      <section className="mx-auto w-full max-w-[1024px] px-6 pt-32 pb-24">
-        <div className="flex max-w-[512px] flex-col gap-10">
+      <section className="mx-auto w-full max-w-[1024px] px-6 pt-32 pb-28">
+        <div className="flex max-w-[512px] flex-col gap-12">
           {/* Avatar */}
           <Avatar
             className="size-24"
@@ -16,8 +20,8 @@ export default function Home() {
             alt="Jerry Kou"
           />
 
-          {/* Heading + body */}
-          <div className="flex flex-col gap-4">
+          {/* Heading + body + CTAs */}
+          <div className="flex flex-col gap-6">
             <h1 className="text-[2rem] font-medium leading-[1.15] tracking-tight">
               AI-native product designer. I design, code, and ship scalable
               products.
@@ -26,13 +30,11 @@ export default function Home() {
               5+ years of experience in projects that generated $40M+ in
               revenue and reached 180k+ daily concurrent users.
             </p>
+            <HeroActions
+              email={siteConfig.email}
+              bookingUrl={siteConfig.bookingUrl}
+            />
           </div>
-
-          {/* CTAs */}
-          <HeroActions
-            email={siteConfig.email}
-            bookingUrl={siteConfig.bookingUrl}
-          />
 
           {/* Achievements */}
           <div className="flex flex-row items-start gap-10 pt-2">
@@ -41,6 +43,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <CaseStudies />
+      <Experience />
+      <Skills />
+      <Tools />
     </main>
   );
 }
