@@ -67,7 +67,7 @@ export function Footer({
   const linkedinHandle = "Jerry Kou";
 
   return (
-    <footer className="border-t border-white/[0.05] pt-20 pb-6">
+    <footer className="border-t border-white/[0.05] bg-white/[0.025] pt-20 pb-6">
       <div className="mx-auto flex w-full max-w-[1024px] flex-col gap-20 px-6">
         {/* Top — left half holds identity, copy, CTAs, contact list */}
         <div className="grid grid-cols-1 md:grid-cols-2">

@@ -36,6 +36,16 @@ export default function RootLayout({
       className={`${hankenGrotesk.variable} ${ibmPlexMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        {/* Strip any URL hash on initial load so refreshing a deep-link
+            (e.g. /#experience) returns to "/" without the anchor jump.
+            Runs early in body parse, before the browser scrolls to the
+            anchor target. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              'if(window.location.hash){history.replaceState(null,"",window.location.pathname);}',
+          }}
+        />
         <Navbar
           bookingUrl={siteConfig.bookingUrl}
           resumeUrl={siteConfig.resumeUrl}

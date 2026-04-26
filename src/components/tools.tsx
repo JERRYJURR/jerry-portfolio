@@ -1,6 +1,22 @@
 "use client";
 
+import {
+  DndContext,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  rectSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import Image from "next/image";
+import { useState, type CSSProperties } from "react";
 import {
   Reveal,
   staggerStyle,
@@ -97,9 +113,29 @@ const COLUMNS: ToolGroup[][] = [
   ],
 ];
 
+const INITIAL_COLUMN_IDS = COLUMNS.map((_, i) => `col-${i}`);
+
 export function Tools() {
-  // Heading reveals on its own; each ToolCard reveals independently as it
-  // scrolls past the trigger.
+  const [columnIds, setColumnIds] = useState(INITIAL_COLUMN_IDS);
+
+  // Require >6px of pointer travel before activating drag, so a quick click
+  // is never interpreted as a sort attempt.
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 6 },
+    }),
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setColumnIds((items) => {
+      const oldIndex = items.indexOf(String(active.id));
+      const newIndex = items.indexOf(String(over.id));
+      return arrayMove(items, oldIndex, newIndex);
+    });
+  };
+
   return (
     <section
       id="tools"
@@ -112,35 +148,112 @@ export function Tools() {
           </h2>
         </Reveal>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-          {COLUMNS.map((column, i) => (
-            <div key={i} className="flex flex-col gap-4">
-              {column.map((group) => (
-                <ToolCard key={group.label} group={group} />
-              ))}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext items={columnIds} strategy={rectSortingStrategy}>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+              {columnIds.map((id) => {
+                const colIndex = Number.parseInt(id.split("-")[1], 10);
+                return (
+                  <SortableColumn
+                    key={id}
+                    id={id}
+                    groups={COLUMNS[colIndex]}
+                  />
+                );
+              })}
             </div>
-          ))}
-        </div>
+          </SortableContext>
+        </DndContext>
       </div>
     </section>
   );
 }
 
-function ToolCard({ group }: { group: ToolGroup }) {
+function SortableColumn({
+  id,
+  groups,
+}: {
+  id: string;
+  groups: ToolGroup[];
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id,
+    transition: {
+      duration: 320,
+      easing: "cubic-bezier(0.2, 0.6, 0.2, 1)",
+    },
+  });
+
+  const style: CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition: transition ?? undefined,
+    zIndex: isDragging ? 10 : undefined,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      className={`group flex flex-col gap-4 touch-none ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
+    >
+      {groups.map((group) => (
+        <ToolCard
+          key={group.label}
+          group={group}
+          isDragging={isDragging}
+        />
+      ))}
+    </div>
+  );
+}
+
+function ToolCard({
+  group,
+  isDragging = false,
+}: {
+  group: ToolGroup;
+  isDragging?: boolean;
+}) {
   const [ref, revealed] = useReveal<HTMLDivElement>();
   const reduced = usePrefersReducedMotion();
-  const style = staggerStyle(0, {
+  const revealStyle = staggerStyle(0, {
     revealed,
     reduced,
     distance: 16,
     duration: 360,
   });
   return (
-    <div ref={ref} style={style} className="flex flex-col gap-2">
+    <div ref={ref} style={revealStyle} className="flex flex-col gap-2">
       <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-zinc-50/[0.66]">
         {group.label}
       </p>
-      <ul className="flex flex-col gap-2 rounded-2xl bg-white/[0.05] p-3">
+      <ul
+        className={`
+          flex flex-col gap-2 rounded-2xl bg-white/[0.05] p-3
+          transition-[box-shadow,background-color,transform]
+          duration-200 ease-[cubic-bezier(0.2,0.6,0.2,1)]
+          group-hover:bg-white/[0.07]
+          group-hover:shadow-[0_8px_24px_-12px_rgba(0,0,0,0.45)]
+          ${
+            isDragging
+              ? "scale-[1.03] bg-white/[0.10] shadow-[0_24px_48px_-12px_rgba(0,0,0,0.6)]"
+              : ""
+          }
+        `}
+      >
         {group.tools.map((tool) => (
           <li key={tool.name} className="flex items-center gap-3">
             <span className="relative size-6 shrink-0 rounded-md shadow-[0_1px_2px_rgba(0,0,0,0.4),0_4px_12px_rgba(0,0,0,0.2)]">

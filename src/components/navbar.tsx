@@ -38,6 +38,8 @@ export function Navbar({ bookingUrl, resumeUrl }: NavbarProps) {
     (event: MouseEvent<HTMLAnchorElement>) => {
       if (pathname !== "/") return;
       event.preventDefault();
+      // Drop any nav-link hash so the URL matches a fresh visit.
+      window.history.replaceState(null, "", "/");
       window.dispatchEvent(new Event("portfolio-reset"));
       window.scrollTo({ top: 0, behavior: "smooth" });
     },
