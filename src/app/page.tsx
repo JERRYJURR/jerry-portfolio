@@ -10,7 +10,7 @@ import siteConfig from "../../site.config.json";
 export default function Home() {
   return (
     <main className="flex flex-1 flex-col">
-      <section className="mx-auto w-full max-w-[1024px] px-6 pt-32 pb-28">
+      <section className="mx-auto w-full max-w-[1024px] px-6 pt-32 pb-14">
         <div className="flex max-w-[512px] flex-col gap-12">
           {/* Avatar */}
           <Avatar

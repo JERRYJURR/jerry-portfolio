@@ -34,7 +34,7 @@ export function HeroActions({ email, bookingUrl }: HeroActionsProps) {
   }, [email]);
 
   return (
-    <div className="flex flex-row gap-2">
+    <div className="mt-2 flex flex-row gap-2">
       {/* Primary · Book a call */}
       <a
         href={bookingUrl}
@@ -45,7 +45,7 @@ export function HeroActions({ email, bookingUrl }: HeroActionsProps) {
           inline-flex h-10 items-center gap-1 rounded-[12px] px-[14px]
           border border-white
           bg-gradient-to-b from-[oklab(94%_0_0)] to-[oklab(78%_0_0)]
-          text-sm font-medium text-zinc-950
+          text-base font-medium text-zinc-950
           transition-[transform,box-shadow,background-image]
           duration-[420ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]
           will-change-transform
@@ -90,7 +90,7 @@ export function HeroActions({ email, bookingUrl }: HeroActionsProps) {
           inline-flex h-10 items-center gap-2 rounded-[12px] px-[14px]
           border
           bg-gradient-to-b from-white/[0.05] to-white/[0.025]
-          text-sm font-medium
+          text-base font-medium
           shadow-[0_0_0_0_rgba(0,0,0,0)]
           transition-[transform,border-color,color,background-image,box-shadow]
           duration-[160ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]

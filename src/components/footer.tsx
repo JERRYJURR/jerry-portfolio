@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Check, Copy, Download, ExternalLink } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Avatar } from "@/components/avatar";
+import { Reveal } from "@/components/reveal";
 
 type FooterProps = {
   email: string;
@@ -31,6 +32,16 @@ export function Footer({
       }
     };
   }, []);
+
+  // Each footer block reveals independently as it enters the viewport.
+  // rootMargin "0px" (not the 80% default) because the bottom-most blocks
+  // sit too close to the page bottom to ever cross the 80%-from-top line —
+  // they need a more permissive trigger to fire at all.
+  const blockReveal = {
+    rootMargin: "0px",
+    distance: 12,
+    duration: 480,
+  };
 
   const handleCopy = useCallback(async () => {
     try {
@@ -63,7 +74,10 @@ export function Footer({
           <div className="flex flex-col gap-12">
             {/* Identity + copy + CTAs */}
             <div className="flex flex-col gap-6">
-              <div className="mb-2 flex flex-row items-center gap-4">
+              <Reveal
+                {...blockReveal}
+                className="mb-2 flex flex-row items-center gap-4"
+              >
                 <Avatar className="size-12" sizes="48px" alt="Jerry Kou" />
                 <div className="flex flex-col gap-2">
                   <p className="text-2xl font-normal leading-[30px] tracking-tight text-zinc-50">
@@ -73,17 +87,20 @@ export function Footer({
                     Senior Product Designer
                   </p>
                 </div>
-              </div>
-              <p className="text-base leading-[1.5] text-zinc-50/[0.66]">
-                I&apos;m currently figuring out how to make designing with
-                prompts as easy and smooth as designing with a pencil or mouse.
-              </p>
-              <p className="text-base leading-[1.5] text-zinc-50/[0.66]">
-                Want to collaborate? Let&apos;s build something together.
-              </p>
+              </Reveal>
+              <Reveal {...blockReveal} className="flex flex-col gap-6">
+                <p className="text-base leading-[1.5] text-zinc-50/[0.66]">
+                  I&apos;m currently figuring out how to make designing with
+                  prompts as easy and smooth as designing with a pencil or
+                  mouse.
+                </p>
+                <p className="text-base leading-[1.5] text-zinc-50/[0.66]">
+                  Want to collaborate? Let&apos;s build something together.
+                </p>
+              </Reveal>
 
               {/* CTAs — large variant matching the hero buttons */}
-              <div className="flex flex-row gap-2">
+              <Reveal {...blockReveal} className="mt-2 flex flex-row gap-2">
                 <a
                   href={bookingUrl}
                   target="_blank"
@@ -93,7 +110,7 @@ export function Footer({
                     inline-flex h-10 items-center gap-1 rounded-[12px] px-[14px]
                     border border-white
                     bg-gradient-to-b from-[oklab(94%_0_0)] to-[oklab(78%_0_0)]
-                    text-sm font-medium text-zinc-950
+                    text-base font-medium text-zinc-950
                     transition-[transform,box-shadow,background-image]
                     duration-[420ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]
                     will-change-transform
@@ -137,7 +154,7 @@ export function Footer({
                     inline-flex h-10 items-center gap-2 rounded-[12px] px-[14px]
                     border border-white/10
                     bg-gradient-to-b from-white/[0.05] to-white/[0.025]
-                    text-sm font-medium text-zinc-50
+                    text-base font-medium text-zinc-50
                     transition-[transform,border-color,background-image,box-shadow]
                     duration-[160ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]
                     will-change-transform
@@ -160,11 +177,12 @@ export function Footer({
                     "
                   />
                 </a>
-              </div>
+              </Reveal>
             </div>
 
             {/* Contact list */}
-            <ul className="flex flex-col">
+            <Reveal {...blockReveal}>
+              <ul className="flex flex-col">
               <li className="flex items-center justify-between gap-2 border-b border-white/[0.05] py-3">
                 <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-zinc-50/[0.66]">
                   Location
@@ -247,12 +265,16 @@ export function Footer({
                   />
                 </Link>
               </li>
-            </ul>
+              </ul>
+            </Reveal>
           </div>
         </div>
 
         {/* Bottom — copyright + credits */}
-        <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
+        <Reveal
+          {...blockReveal}
+          className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center"
+        >
           <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-zinc-50/[0.66]">
             © {year} Jerry Kou. All rights reserved.
           </p>
@@ -270,7 +292,7 @@ export function Footer({
               Built with Claude Code
             </span>
           </div>
-        </div>
+        </Reveal>
       </div>
     </footer>
   );

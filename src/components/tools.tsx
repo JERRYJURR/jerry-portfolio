@@ -1,4 +1,12 @@
+"use client";
+
 import Image from "next/image";
+import {
+  Reveal,
+  staggerStyle,
+  usePrefersReducedMotion,
+  useReveal,
+} from "@/components/reveal";
 
 type Tool = {
   name: string;
@@ -90,12 +98,19 @@ const COLUMNS: ToolGroup[][] = [
 ];
 
 export function Tools() {
+  // Heading reveals on its own; each ToolCard reveals independently as it
+  // scrolls past the trigger.
   return (
-    <section id="tools" className="mx-auto w-full max-w-[1024px] px-6 pt-28 pb-40">
+    <section
+      id="tools"
+      className="mx-auto w-full max-w-[1024px] px-6 pt-14 pb-40"
+    >
       <div className="flex flex-col gap-8">
-        <h2 className="text-2xl font-normal leading-[30px] tracking-tight text-zinc-50">
-          Tools
-        </h2>
+        <Reveal distance={16} duration={360}>
+          <h2 className="text-2xl font-normal leading-[30px] tracking-tight text-zinc-50">
+            Tools
+          </h2>
+        </Reveal>
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
           {COLUMNS.map((column, i) => (
@@ -112,8 +127,16 @@ export function Tools() {
 }
 
 function ToolCard({ group }: { group: ToolGroup }) {
+  const [ref, revealed] = useReveal<HTMLDivElement>();
+  const reduced = usePrefersReducedMotion();
+  const style = staggerStyle(0, {
+    revealed,
+    reduced,
+    distance: 16,
+    duration: 360,
+  });
   return (
-    <div className="flex flex-col gap-2">
+    <div ref={ref} style={style} className="flex flex-col gap-2">
       <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-zinc-50/[0.66]">
         {group.label}
       </p>

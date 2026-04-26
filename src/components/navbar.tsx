@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowRight, Download } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type MouseEvent } from "react";
 import { Avatar } from "@/components/avatar";
 
 type NavbarProps = {
@@ -24,6 +25,30 @@ export function Navbar({ bookingUrl, resumeUrl }: NavbarProps) {
   const [rampFactor, setRampFactor] = useState(0);
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
+  // Timestamp until which scroll events are treated as the result of a nav
+  // click rather than a user gesture; while active, the hide-on-scroll-down
+  // logic is suppressed so the navbar stays visible after clicking a link.
+  const programmaticUntil = useRef(0);
+  const pathname = usePathname();
+
+  // On the home page, brand click fires a reset event (replays all
+  // animations) and smooth-scrolls to top in parallel. Any other route
+  // falls through to normal Link navigation.
+  const handleBrandClick = useCallback(
+    (event: MouseEvent<HTMLAnchorElement>) => {
+      if (pathname !== "/") return;
+      event.preventDefault();
+      window.dispatchEvent(new Event("portfolio-reset"));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [pathname],
+  );
+
+  // Mark scroll events as programmatic for ~1.5s after a nav-link click so
+  // the navbar doesn't auto-hide while smooth-scrolling to the target.
+  const handleNavClick = useCallback(() => {
+    programmaticUntil.current = performance.now() + 1500;
+  }, []);
 
   useEffect(() => {
     const reduceMotion = window.matchMedia(
@@ -36,7 +61,9 @@ export function Navbar({ bookingUrl, resumeUrl }: NavbarProps) {
       const factor = Math.min(Math.max(currentY / SCROLL_RAMP_RANGE, 0), 1);
       setRampFactor(factor);
 
-      if (!reduceMotion) {
+      const isProgrammatic = performance.now() < programmaticUntil.current;
+
+      if (!reduceMotion && !isProgrammatic) {
         const delta = currentY - lastScrollY.current;
         if (currentY < SCROLL_HIDE_THRESHOLD) {
           setHidden(false);
@@ -84,17 +111,27 @@ export function Navbar({ bookingUrl, resumeUrl }: NavbarProps) {
           {/* Brand · fills left half so center can sit dead-center */}
           <Link
             href="/"
+            onClick={handleBrandClick}
             className="
               group flex flex-1 flex-row items-center gap-3
-              transition-opacity duration-150 ease-out
-              hover:opacity-80
               focus-visible:outline-none focus-visible:ring-2
               focus-visible:ring-white focus-visible:ring-offset-2
               focus-visible:ring-offset-background rounded-md
             "
           >
             <Avatar className="size-8" sizes="32px" />
-            <span className="text-lg font-medium text-zinc-50">Jerry Kou</span>
+            <span className="relative text-lg font-medium text-zinc-50">
+              Jerry Kou
+              <span
+                aria-hidden
+                className="
+                  pointer-events-none absolute -bottom-0.5 left-0 right-0
+                  h-[0.5px] origin-left scale-x-0 bg-zinc-50/[0.33]
+                  transition-transform duration-[180ms] ease-out
+                  group-hover:scale-x-100
+                "
+              />
+            </span>
           </Link>
 
           {/* Nav links · hug content */}
@@ -103,6 +140,7 @@ export function Navbar({ bookingUrl, resumeUrl }: NavbarProps) {
               <li key={item.href}>
                 <a
                   href={item.href}
+                  onClick={handleNavClick}
                   className="
                     text-sm text-muted-foreground
                     transition-colors duration-150 ease-out
@@ -130,7 +168,7 @@ export function Navbar({ bookingUrl, resumeUrl }: NavbarProps) {
                 inline-flex h-8 items-center gap-1 rounded-[10px] px-3
                 border border-white
                 bg-gradient-to-b from-[oklab(94%_0_0)] to-[oklab(78%_0_0)]
-                text-[13px] font-medium text-zinc-950
+                text-sm font-medium text-zinc-950
                 transition-[transform,box-shadow,background-image]
                 duration-[420ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]
                 will-change-transform
@@ -175,7 +213,7 @@ export function Navbar({ bookingUrl, resumeUrl }: NavbarProps) {
                 inline-flex h-8 items-center gap-1.5 rounded-[10px] px-3
                 border border-white/10
                 bg-gradient-to-b from-white/[0.05] to-white/[0.025]
-                text-[13px] font-medium text-zinc-50
+                text-sm font-medium text-zinc-50
                 shadow-[0_0_0_0_rgba(0,0,0,0)]
                 transition-[transform,border-color,background-image,box-shadow]
                 duration-[160ms] ease-[cubic-bezier(0.34,1.56,0.64,1)]

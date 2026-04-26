@@ -1,5 +1,13 @@
+"use client";
+
 import { Binoculars, Code2, Paintbrush } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import {
+  Reveal,
+  staggerStyle,
+  usePrefersReducedMotion,
+  useReveal,
+} from "@/components/reveal";
 
 type SkillGroup = {
   icon: LucideIcon;
@@ -39,19 +47,24 @@ const SKILL_GROUPS: SkillGroup[] = [
 ];
 
 export function Skills() {
+  // Each skill group reveals independently as it scrolls past the trigger
+  // line. Left column heading + body fades on its own.
   return (
-    <section id="skills" className="mx-auto w-full max-w-[1024px] px-6 py-28">
+    <section
+      id="skills"
+      className="mx-auto w-full max-w-[1024px] px-6 py-14"
+    >
       <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-0">
         {/* Left · heading + body (sticky) */}
         <div className="md:sticky md:top-24 md:self-start">
-          <div className="flex flex-col gap-6">
+          <Reveal distance={16} duration={360} className="flex flex-col gap-6">
             <h2 className="text-2xl font-normal leading-[30px] tracking-tight text-zinc-50">
               Skills &amp; competencies
             </h2>
             <p className="max-w-[270px] text-base leading-[1.5] text-zinc-50/[0.66]">
               I&apos;m always looking to sharpen my skills and learn new things.
             </p>
-          </div>
+          </Reveal>
         </div>
 
         {/* Right · groups */}
@@ -77,8 +90,18 @@ function SkillGroupRow({
   isLast: boolean;
 }) {
   const Icon = group.icon;
+  const [ref, revealed] = useReveal<HTMLDivElement>();
+  const reduced = usePrefersReducedMotion();
+  const style = staggerStyle(0, {
+    revealed,
+    reduced,
+    distance: 16,
+    duration: 360,
+  });
   return (
     <div
+      ref={ref}
+      style={style}
       className={`flex items-start gap-6 py-10 first:pt-0 ${
         isLast ? "" : "border-b border-white/[0.05]"
       }`}

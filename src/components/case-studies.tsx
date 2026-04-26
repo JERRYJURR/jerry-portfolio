@@ -1,4 +1,7 @@
+"use client";
+
 import { CaseStudyCard } from "@/components/case-study-card";
+import { Reveal } from "@/components/reveal";
 
 type CaseStudy = {
   year: string;
@@ -131,19 +134,64 @@ const CASE_STUDIES: CaseStudy[] = [
   },
 ];
 
+// Group cards into rows: each "full" card is its own row; consecutive "half"
+// cards pair up into one row.
+function buildRows(items: CaseStudy[]): CaseStudy[][] {
+  const rows: CaseStudy[][] = [];
+  let pending: CaseStudy[] = [];
+  for (const cs of items) {
+    if (cs.layout === "full") {
+      if (pending.length > 0) {
+        rows.push(pending);
+        pending = [];
+      }
+      rows.push([cs]);
+    } else {
+      pending.push(cs);
+      if (pending.length === 2) {
+        rows.push(pending);
+        pending = [];
+      }
+    }
+  }
+  if (pending.length > 0) rows.push(pending);
+  return rows;
+}
+
 export function CaseStudies() {
+  // Heading + each row reveal independently as they scroll past the trigger.
+  const rows = buildRows(CASE_STUDIES);
+
   return (
     <section
       id="case-studies"
-      className="mx-auto w-full max-w-[1024px] px-6 py-28"
+      className="mx-auto w-full max-w-[1024px] px-6 py-14"
     >
-      <h2 className="text-2xl font-normal leading-[30px] tracking-tight text-zinc-50">
-        Case studies
-      </h2>
-      <div className="mt-10 grid grid-cols-2 gap-2 [perspective:1200px]">
-        {CASE_STUDIES.map((cs) => (
-          <CaseStudyCard key={cs.href} {...cs} />
-        ))}
+      <Reveal distance={16} duration={360}>
+        <h2 className="text-2xl font-normal leading-[30px] tracking-tight text-zinc-50">
+          Case studies
+        </h2>
+      </Reveal>
+      <div className="mt-10 flex flex-col gap-2 [perspective:1200px]">
+        {rows.map((row, i) => {
+          const isFullRow = row.length === 1 && row[0].layout === "full";
+          return (
+            <Reveal
+              key={`row-${i}`}
+              distance={16}
+              duration={360}
+              className={
+                isFullRow
+                  ? undefined
+                  : "grid grid-cols-1 gap-2 md:grid-cols-2"
+              }
+            >
+              {row.map((cs) => (
+                <CaseStudyCard key={cs.href} {...cs} />
+              ))}
+            </Reveal>
+          );
+        })}
       </div>
     </section>
   );

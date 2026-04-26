@@ -1,6 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import { Gauge, ListChecks, Rocket, Zap } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import {
+  staggerStyle,
+  usePrefersReducedMotion,
+  useReveal,
+} from "@/components/reveal";
 
 type Bullet = {
   icon: LucideIcon;
@@ -21,7 +28,7 @@ const ROLES: Role[] = [
     logo: "/icons/xp3.jpg",
     logoAlt: "Ex Populus",
     company: "Ex Populus",
-    dateRange: "Jan 2025 – Apr 2026",
+    dateRange: "Jan 2025 – Now",
     title: "Senior Product Designer",
     bullets: [
       {
@@ -78,7 +85,7 @@ export function Experience() {
   return (
     <section
       id="experience"
-      className="mx-auto w-full max-w-[1024px] px-6 py-28"
+      className="mx-auto w-full max-w-[1024px] px-6 py-14"
     >
       <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-0">
         {/* Left · heading + body (sticks while right column scrolls) */}
@@ -110,8 +117,20 @@ export function Experience() {
 }
 
 function RoleEntry({ role, isLast }: { role: Role; isLast: boolean }) {
+  // Each role reveals independently as it crosses 25% from viewport top,
+  // y +16 → 0 · 360ms.
+  const [ref, revealed] = useReveal<HTMLDivElement>();
+  const reduced = usePrefersReducedMotion();
+  const style = staggerStyle(0, {
+    revealed,
+    reduced,
+    distance: 16,
+    duration: 360,
+  });
   return (
     <div
+      ref={ref}
+      style={style}
       className={`flex flex-col gap-8 py-10 first:pt-0 ${
         isLast ? "" : "border-b border-white/[0.05]"
       }`}
