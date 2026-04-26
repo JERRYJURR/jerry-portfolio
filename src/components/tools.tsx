@@ -149,6 +149,7 @@ export function Tools() {
         </Reveal>
 
         <DndContext
+          id="tools-sortable"
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
